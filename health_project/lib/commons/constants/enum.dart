@@ -1,0 +1,52 @@
+enum PersonalUpdateMsgType {
+  PROCESSING,
+  OK,
+  NOT_MATCH_PASSWORD,
+  WRONG_OLD_PASSWORD,
+  EMPTY_NEW_PASSWORD,
+  INVALID_NAME,
+  INVALID_BIRTHDAY,
+  INVALID_PHONE,
+  NOT_CONFIRM_PHONE,
+  INVALID_ADDRESS,
+  WRONG_OTP,
+  DISCONNECT,
+  CONFIRMED_OTP,
+}
+
+enum BMIUpdateMsgType {
+  PROCESSING,
+  EMPTY,
+  INVALID,
+  FAILED,
+}
+
+enum LoginErrorType {
+  ACCOUNT_ERR,
+  PHONE_ERR,
+}
+
+enum MessageWidgetType {
+  WARNING,
+  LOADING,
+  ERROR,
+  SUCCESS,
+}
+
+enum PeripheralSupport {
+  UNKNOWN,
+  MI_BAND_5,
+  MI_BAND_4,
+  MI_BAND_3,
+  MI_BAND_2,
+  AMAZFIT,
+  FIT_E,
+}
+
+enum VitalSignType {
+  HEART_RATE,
+  BLOOD_PRESSURE,
+  SPO2,
+  OXY,
+  BODY_TEMP,
+}

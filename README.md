@@ -5,4 +5,4 @@ Project description: An application provides news about health; weather based on
 
 Technologies: Java Spring Boot, Flutter with BLoc Design Pattern, Firebase.
 
-Screen design: https://www.pinterest.com/duchieupham1709/mobile-app/
+Screen design: https://www.pinterest.com/duchieupham1709/health-project/

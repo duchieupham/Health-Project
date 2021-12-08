@@ -7,6 +7,8 @@ import 'package:health_project/features/calendar/repositories/calendar_repositor
 import 'package:health_project/features/health/blocs/health_bloc.dart';
 import 'package:health_project/features/health/repositories/health_repository.dart';
 import 'package:health_project/features/health/views/activity_view.dart';
+import 'package:health_project/features/health/views/blood_pressure_view.dart';
+import 'package:health_project/features/health/views/heart_rate_view.dart';
 import 'package:health_project/features/home/home_view.dart';
 import 'package:health_project/features/home/theme_setting_view.dart';
 import 'package:health_project/features/login/blocs/login_bloc.dart';
@@ -38,7 +40,7 @@ import 'package:health_project/services/peripheral_helper.dart';
 import 'package:health_project/services/phone_confirm_provider.dart';
 import 'package:health_project/services/scroll_provider.dart';
 import 'package:health_project/services/sqflite_helper.dart';
-import 'package:health_project/services/tab_login_provider.dart';
+import 'package:health_project/services/tab_provider.dart';
 import 'package:health_project/services/theme_helper.dart';
 import 'package:health_project/services/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -181,7 +183,7 @@ class HealthProject extends StatelessWidget {
             ChangeNotifierProvider(create: (context) => PageSelectProvider()),
             ChangeNotifierProvider(create: (context) => ScrollProvider()),
             ChangeNotifierProvider(create: (context) => ThemeProvider()),
-            ChangeNotifierProvider(create: (context) => TabLoginProvider()),
+            ChangeNotifierProvider(create: (context) => TabProvider()),
             ChangeNotifierProvider(create: (context) => CalendarProvider()),
             ChangeNotifierProvider(create: (context) => CalendarDateProvider()),
             ChangeNotifierProvider(
@@ -216,6 +218,8 @@ class HealthProject extends StatelessWidget {
                   Routes.PERIPHERAL_INFOR_VIEW: (context) =>
                       PeripheralInfoView(),
                   Routes.ACTIVITY_VIEW: (context) => ActivityView(),
+                  Routes.HEART_RATE_VIEW: (context) => HeartRateView(),
+                  Routes.BLOOD_PRESSURE_VIEW: (context) => BloodPressureView(),
                 },
                 localizationsDelegates: [
                   // ... app-specific localization delegate[s] here

@@ -50,3 +50,8 @@ enum VitalSignType {
   OXY,
   BODY_TEMP,
 }
+
+enum ChartType {
+  HOUR,
+  DAY,
+}

@@ -7,4 +7,12 @@ class DefaultNumeral {
   static const int TIME_OUT_SCANNING = 10;
   //default borderRadius
   static const double DEFAULT_BORDER_RAD = 12;
+  //defulat margin context width edge of phone
+  static const double DEFAULT_MARGIN = 20;
+  //default unit value of heart rate
+  static const int HEART_RATE_UNIT = 150;
+  //default time unit of an hour
+  static const int UNIT_HOUR = 60;
+  //default time unit of a day
+  static const int UNIT_DAY = 1440;
 }

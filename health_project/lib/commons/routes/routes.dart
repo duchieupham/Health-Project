@@ -10,4 +10,6 @@ class Routes {
   static const String CONNECT_PERIPHERAL_VIEW = '/ConnectPeripheralView';
   static const String PERIPHERAL_INFOR_VIEW = '/PeripheralInfoView';
   static const String ACTIVITY_VIEW = '/ActivityView';
+  static const String HEART_RATE_VIEW = '/HeartRateView';
+  static const String BLOOD_PRESSURE_VIEW = '/BloodPressureView';
 }

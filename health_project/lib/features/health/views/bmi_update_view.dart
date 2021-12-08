@@ -129,7 +129,7 @@ class BMIUpdateView extends StatelessWidget {
                             scrollController: FixedExtentScrollController(
                               initialItem: _height.toInt() - 1,
                             ),
-                            children: _listHeight(),
+                            children: _listHeight(context),
                             onSelectedItemChanged: (value) {
                               SystemSound.play(SystemSoundType.click);
                               _height = value + 1;
@@ -180,7 +180,7 @@ class BMIUpdateView extends StatelessWidget {
     );
   }
 
-  List<Widget> _listHeight() {
+  List<Widget> _listHeight(BuildContext context) {
     return _heightList.map((e) {
       return Align(
         alignment: Alignment.center,
@@ -188,6 +188,7 @@ class BMIUpdateView extends StatelessWidget {
           '${e + 1} cm',
           style: TextStyle(
             fontSize: 15,
+            color: Theme.of(context).hintColor,
           ),
         ),
       );

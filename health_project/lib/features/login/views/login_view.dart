@@ -12,7 +12,7 @@ import 'package:health_project/features/login/blocs/login_bloc.dart';
 import 'package:health_project/features/login/events/login_event.dart';
 import 'package:health_project/features/login/states/login_state.dart';
 import 'package:health_project/features/login/views/confirm_otp_view.dart';
-import 'package:health_project/services/tab_login_provider.dart';
+import 'package:health_project/services/tab_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rive/rive.dart' as rive;
@@ -62,7 +62,7 @@ class _LoginView extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Consumer<TabLoginProvider>(
+        child: Consumer<TabProvider>(
           builder: (context, tabSelect, child) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -290,7 +290,7 @@ class _LoginView extends State<LoginView> {
           );
   }
 
-  _buildTab(TabLoginProvider tabSelect) {
+  _buildTab(TabProvider tabSelect) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 35,
@@ -323,7 +323,7 @@ class _LoginView extends State<LoginView> {
     );
   }
 
-  _buildTabButton(TabLoginProvider tabProvider, int index) {
+  _buildTabButton(TabProvider tabProvider, int index) {
     return InkWell(
       borderRadius: BorderRadius.circular(40),
       onTap: () {

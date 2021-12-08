@@ -171,31 +171,38 @@ class HealthView extends StatelessWidget {
     );
   }
 
+  //index starting is 1
   Widget _buildVitalSignComponent(BuildContext context, int index) {
-    return Container(
-      margin: EdgeInsets.only(
-        top: 10,
-        right: (index % 3 == 1 || index % 3 == 2) ? 5 : 0,
-        left: (index % 3 == 0 || index % 3 == 2) ? 5 : 0,
-      ),
-      padding: EdgeInsets.only(left: 20, right: 20),
-      decoration: DefaultTheme.cardDecoration(context),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            HealthUtil.instance.getImageVitalSign(index),
-            width: 40,
-            height: 40,
-          ),
-          Text(
-            HealthUtil.instance.getVitalSignName(index),
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 15,
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(
+            context, HealthUtil.instance.getVitalSignRoute(index));
+      },
+      child: Container(
+        margin: EdgeInsets.only(
+          top: 10,
+          right: (index % 3 == 1 || index % 3 == 2) ? 5 : 0,
+          left: (index % 3 == 0 || index % 3 == 2) ? 5 : 0,
+        ),
+        padding: EdgeInsets.only(left: 20, right: 20),
+        decoration: DefaultTheme.cardDecoration(context),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              HealthUtil.instance.getImageVitalSign(index),
+              width: 40,
+              height: 40,
             ),
-          ),
-        ],
+            Text(
+              HealthUtil.instance.getVitalSignName(index),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

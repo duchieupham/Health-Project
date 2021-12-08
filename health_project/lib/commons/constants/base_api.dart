@@ -5,8 +5,8 @@ import 'package:health_project/services/authentication_helper.dart';
 import 'package:http/http.dart' as http;
 
 //prefix url for access API
-const BASE_URL = 'http://10.10.73.163:8084/api/v1';
-const BASE_URL_IMAGE = 'http://10.10.73.163:8084/images';
+const BASE_URL = 'http://192.168.1.101:8084/api/v1';
+const BASE_URL_IMAGE = 'http://192.168.1.101:8084/images';
 const BASE_URL_WEATHER = 'https://www.metaweather.com/api/location';
 
 //Base API for get data from server without using thread/isolate.

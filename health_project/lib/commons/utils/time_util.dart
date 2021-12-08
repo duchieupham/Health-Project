@@ -65,6 +65,38 @@ class TimeUtil {
     return _format.format(bDay).toString();
   }
 
+  //get hour for heart rate painter
+  String getHour(String time) {
+    DateFormat _format = DateFormat('HH');
+    return _format.format(DateTime.parse(time)).toString();
+  }
+
+  //get next hour for heart rate painter
+  String getNextHour(String time) {
+    DateFormat _format = DateFormat('HH');
+    return _format
+        .format(
+          DateTime.parse(time).add(
+            Duration(
+              hours: 1,
+            ),
+          ),
+        )
+        .toString();
+  }
+
+  //format hour
+  String formatTime(String hour, String minute) {
+    if (hour.length < 2) {
+      hour = '0$hour';
+    }
+    if (minute.length < 2) {
+      minute = '0$minute';
+    }
+
+    return '$hour:$minute';
+  }
+
   //get date in week to display today_view
   String getCurrentDateInWeek() {
     String result = '';
@@ -84,6 +116,16 @@ class TimeUtil {
         DateFormat.M(Locale('en').countryCode).format(_now));
     result = _day + ' ' + _month;
     return result;
+  }
+
+  //parse listTime to list Index of Values
+  List<int> parseListTimeToIndexValues(List<String> timeValues) {
+    List<int> indexValues = [];
+    for (String time in timeValues) {
+      int index = int.parse(time.split(':')[1]);
+      indexValues.add(index);
+    }
+    return indexValues;
   }
 
   //get date of week string

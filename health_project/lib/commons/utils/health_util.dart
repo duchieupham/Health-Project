@@ -1,3 +1,5 @@
+import 'package:health_project/commons/routes/routes.dart';
+
 class HealthUtil {
   const HealthUtil._privateConsrtructor();
 
@@ -82,5 +84,15 @@ class HealthUtil {
       name = 'Nhiệt độ cơ thể';
     }
     return name;
+  }
+
+  String getVitalSignRoute(int index) {
+    String routeName = '';
+    if (index == 1) {
+      routeName = Routes.HEART_RATE_VIEW;
+    } else if (index == 2) {
+      routeName = Routes.BLOOD_PRESSURE_VIEW;
+    }
+    return routeName;
   }
 }

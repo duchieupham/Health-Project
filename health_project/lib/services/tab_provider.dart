@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TabLoginProvider with ChangeNotifier {
+class TabProvider with ChangeNotifier {
   int _tabIndex = 0;
 
   get tabIndex => _tabIndex;

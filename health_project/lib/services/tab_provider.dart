@@ -5,7 +5,7 @@ class TabProvider with ChangeNotifier {
 
   get tabIndex => _tabIndex;
 
-  void updateTabIndex(int index) async {
+  void updateTabIndex(int index) {
     _tabIndex = index;
     notifyListeners();
   }

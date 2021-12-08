@@ -14,5 +14,5 @@ class DefaultNumeral {
   //default time unit of an hour
   static const int UNIT_HOUR = 60;
   //default time unit of a day
-  static const int UNIT_DAY = 1440;
+  static const int UNIT_DAY = 24;
 }

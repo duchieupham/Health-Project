@@ -6,10 +6,8 @@ import 'package:health_project/commons/routes/routes.dart';
 import 'package:health_project/commons/utils/peripheral_util.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:health_project/commons/widgets/header_widget.dart';
-import 'package:health_project/services/peripheral_connecting_provider.dart';
 import 'package:health_project/services/peripheral_helper.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:provider/provider.dart';
 
 class ConnectPeripheralView extends StatefulWidget {
   const ConnectPeripheralView();

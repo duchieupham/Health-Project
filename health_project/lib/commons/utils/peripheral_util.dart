@@ -209,3 +209,11 @@ class PeripheralCommand {
   static const START_HEART_RATE_MEASUREMENT = [0x15, MANUAL, TOGGLE_ON];
   static const STOP_HEART_RATE_MEASUREMENT = [0x15, CONTINUOUS, TOGGLE_OFF];
 }
+
+class VitalSignValueType {
+  static const TYPE_HEART_RATE = 'HEART_RATE';
+  static const TYPE_BLOOD_PRESSURE = 'BLOOD_PRESSURE';
+  static const TYPE_BODY_TEMPURATURE = 'BODY_TEMP';
+  static const TYPE_SPO2 = 'SPO2';
+  static const TYPE_OXY = 'BLOOD_OXY';
+}

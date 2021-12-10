@@ -65,24 +65,71 @@ class TimeUtil {
     return _format.format(bDay).toString();
   }
 
+  //format heart rate time to date to insert sqflite
+  String formatHeartRateTimeRecorded(String date) {
+    DateFormat _format = DateFormat('yyyy-MM-dd HH:mm');
+    return _format.format(DateTime.parse(date)).toString();
+  }
+
+  bool isHeartRateSameTime(String date1, String date2) {
+    bool check = false;
+    String date1Formatted = formatHeartRateTimeRecorded(date1);
+    String date2Formatted = formatHeartRateTimeRecorded(date2);
+    if (date1Formatted == date2Formatted) {
+      check = true;
+    }
+    return check;
+  }
+
   //get hour for heart rate painter
   String getHour(String time) {
     DateFormat _format = DateFormat('HH');
-    return _format.format(DateTime.parse(time)).toString();
+    if (time == '') return '';
+    return (DateTime.tryParse(time) != null)
+        ? _format.format(DateTime.parse(time)).toString()
+        : time.split(':')[0];
+  }
+
+  //get hour for heart rate view
+  String getHourToView(String time) {
+    DateFormat _format = DateFormat('HH');
+    if (time == '') return '';
+    String hourString = '';
+    String hourFormatted = '';
+    if (DateTime.tryParse(time) != null) {
+      hourFormatted = _format.format(DateTime.parse(time)).toString();
+    } else {
+      hourFormatted = time.split(':')[0];
+    }
+    if (hourFormatted.length == 1) {
+      hourString = '0$hourFormatted:00';
+    } else {
+      hourString = '$hourFormatted:00';
+    }
+
+    return hourString;
   }
 
   //get next hour for heart rate painter
-  String getNextHour(String time) {
+  String getNextHourToView(String time) {
     DateFormat _format = DateFormat('HH');
-    return _format
-        .format(
-          DateTime.parse(time).add(
-            Duration(
-              hours: 1,
-            ),
-          ),
-        )
-        .toString();
+    if (time == '') return '';
+    String hourString = '';
+    String hourFormatted = '';
+    if (DateTime.tryParse(time) != null) {
+      hourFormatted = _format
+          .format(DateTime.parse(time).add(Duration(hours: 1)))
+          .toString();
+    } else {
+      hourFormatted = time.split(':')[0];
+    }
+    if (hourFormatted.length == 1) {
+      hourString = '0$hourFormatted:00';
+    } else {
+      hourString = '$hourFormatted:00';
+    }
+
+    return hourString;
   }
 
   //format hour

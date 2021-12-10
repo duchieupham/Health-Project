@@ -32,6 +32,7 @@ import 'package:health_project/features/peripheral/views/peripheral_info_view.da
 import 'package:health_project/services/authentication_helper.dart';
 import 'package:health_project/services/calendar_provider.dart';
 import 'package:health_project/services/gender_select_provider.dart';
+import 'package:health_project/services/heart_rate_helper.dart';
 import 'package:health_project/services/news_page_provider.dart';
 import 'package:health_project/services/notification_count_provider.dart';
 import 'package:health_project/services/page_select_provider.dart';
@@ -104,6 +105,10 @@ void _initialServiceHelper() {
       sharedPrefs.getBool('PERIPHERAL_CONNECT') == null) {
     PeripheralHelper.instance.initialPeripheralHelper();
   }
+  if (!sharedPrefs.containsKey('LAST_HEART_RATE') ||
+      sharedPrefs.getInt('LAST_HEART_RATE') == null) {
+    HeartRateHelper.instance.initialHeartRateHelper();
+  }
 }
 
 class HealthProject extends StatelessWidget {
@@ -164,6 +169,13 @@ class HealthProject extends StatelessWidget {
         ),
         BlocProvider<ActivityBloc>(
           create: (BuildContext context) => ActivityBloc(
+            healthRepository: healthRepository,
+            peripheralRepository: peripheralRepository,
+            sqfLiteHelper: SQFLiteHelper.instance,
+          ),
+        ),
+        BlocProvider<HeartRateBloc>(
+          create: (BuildContext context) => HeartRateBloc(
             healthRepository: healthRepository,
             peripheralRepository: peripheralRepository,
             sqfLiteHelper: SQFLiteHelper.instance,

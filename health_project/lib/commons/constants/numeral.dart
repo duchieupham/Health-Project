@@ -15,4 +15,9 @@ class DefaultNumeral {
   static const int UNIT_HOUR = 60;
   //default time unit of a day
   static const int UNIT_DAY = 24;
+
+  //FOR HEART RATE
+  static const MIN_SAFE_HR = 60;
+  static const HIGH_HR = 100;
+  static const MAX_SAFE_HR = 120;
 }

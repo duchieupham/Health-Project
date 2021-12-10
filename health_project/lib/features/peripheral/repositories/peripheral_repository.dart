@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:health_project/commons/constants/enum.dart';
@@ -8,13 +9,16 @@ import 'package:health_project/models/activitiy_dto.dart';
 import 'package:health_project/models/peripheral_information_dto.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:health_project/models/vital_sign_checking_dto.dart';
+import 'package:health_project/services/heart_rate_helper.dart';
 import 'package:uuid/uuid.dart';
+import 'package:rxdart/subjects.dart';
 
 class PeripheralRepository {
   const PeripheralRepository();
 
   static List<BluetoothService>? _services;
   static BluetoothDevice? _device;
+  static final heartRateController = BehaviorSubject<int>();
 
   Future<void> initialService(String peripheralId) async {
     try {
@@ -256,5 +260,44 @@ class PeripheralRepository {
       await FlutterBlue.instance.stopScan();
     }
     return device;
+  }
+
+  //following heart rate. This is a function about tracking heart rate
+  //from time to time.
+
+  //Get heart rate. This function turn sensor on and set notify TURE for value of heart rate sensor. Not return any value.
+  Future<void> getHeartRate(String peripheralId) async {
+    await initialService(peripheralId);
+    final BluetoothService heartRateService = _services!.firstWhere(
+        (service) => service.uuid == PeripheralService.SERVICE_HEART_RATE);
+    //characteristics
+    //control point to kick heart rate sensor ON
+    final BluetoothCharacteristic heartRateControlPoint =
+        heartRateService.characteristics.firstWhere((characteristic) =>
+            characteristic.uuid ==
+            PeripheralCharacteristic.C_HEART_RATE_CONTROL_POINT);
+    //measurement to listen values return
+    final BluetoothCharacteristic heartRateMeasurement =
+        heartRateService.characteristics.firstWhere((characteristic) =>
+            characteristic.uuid ==
+            PeripheralCharacteristic.C_HEART_RATE_MEASUREMENT);
+    //
+
+    await heartRateControlPoint
+        .write(PeripheralCommand.START_HEART_RATE_MORNITORING);
+    heartRateController.sink.add(0);
+    await heartRateMeasurement.setNotifyValue(true);
+    int count = 0;
+    heartRateMeasurement.value.listen((values) {
+      if (count == 0) {
+        HeartRateHelper.instance.updateLastHeartRate(values[1]);
+      }
+      count++;
+      //Because the last value is the old value tracking,
+      // Checking the new value whether matched or not.
+      if (values[1] != HeartRateHelper.instance.getLastHeartRate()) {
+        heartRateController.sink.add(values[1]);
+      }
+    });
   }
 }

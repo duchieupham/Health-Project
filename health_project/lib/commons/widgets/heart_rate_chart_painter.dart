@@ -179,9 +179,10 @@ class HeartRateChartPainter extends CustomPainter {
         //DRAW LINE OF HEART RATE VALUE
         if (heartValues.isNotEmpty &&
             timeValues.isNotEmpty &&
-            valueLength > 0) {
+            valueLength > 1) {
           List<int> indexValues =
               TimeUtil.instance.parseListTimeToIndexValues(timeValues);
+
           //Make sure that heartValues and timeValues is same length
           //so we can check only 1 range of list
           Offset tempPoint = Offset(0, 0);
@@ -193,8 +194,10 @@ class HeartRateChartPainter extends CustomPainter {
             if (i == 0) {
               tempPoint = point;
             }
-            canvas.drawLine(tempPoint, point, heartRateLine);
-            tempPoint = point;
+            if (i > 0) {
+              canvas.drawLine(tempPoint, point, heartRateLine);
+              tempPoint = point;
+            }
           }
           //draw dots and information values
           if (valueLength == heartValues.length) {
@@ -306,6 +309,42 @@ class HeartRateChartPainter extends CustomPainter {
             minPainter.paint(canvas, minLabelPosition);
           }
           //
+        } else if (heartValues.isNotEmpty &&
+            timeValues.isNotEmpty &&
+            valueLength == 1) {
+          List<int> indexValues =
+              TimeUtil.instance.parseListTimeToIndexValues(timeValues);
+          //draw current value
+          Offset currentHeartRatePoint = Offset(
+              indexValues.last * pixelPerTimeUnit,
+              (DefaultNumeral.HEART_RATE_UNIT - heartValues.last) *
+                  pixelPerValueUnit);
+          canvas.drawCircle(currentHeartRatePoint, 3, currentHeartRateDot);
+          canvas.drawCircle(currentHeartRatePoint, 2, currentHeartRateDot2);
+          //
+          Offset heartRateLabelPosition = Offset(
+              indexValues.last * pixelPerTimeUnit - 25,
+              (DefaultNumeral.HEART_RATE_UNIT - heartValues.last) *
+                      pixelPerValueUnit -
+                  25);
+          TextSpan heartRateLabel = TextSpan(
+            text: heartValues.last.toString(),
+            style: TextStyle(
+              color: Theme.of(context).indicatorColor,
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+            ),
+          );
+          TextPainter descriptionPainter = TextPainter(
+            text: heartRateLabel,
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.ltr,
+          );
+          descriptionPainter.layout(
+            minWidth: 50,
+            maxWidth: 50,
+          );
+          descriptionPainter.paint(canvas, heartRateLabelPosition);
         }
         break;
 
@@ -390,8 +429,6 @@ class HeartRateChartPainter extends CustomPainter {
                   .reduce((curr, next) => curr < next ? curr : next);
               int maxValue = heartValuesMap[i]!
                   .reduce((curr, next) => curr > next ? curr : next);
-              print('at $i:00 o"clock, min: $minValue - max: $maxValue');
-              double averageValue = (minValue + maxValue) / 2;
               Offset minPoint = Offset(
                   i * pixelPerTimeUnit,
                   (DefaultNumeral.HEART_RATE_UNIT - minValue) *
@@ -400,23 +437,10 @@ class HeartRateChartPainter extends CustomPainter {
                   i * pixelPerTimeUnit,
                   (DefaultNumeral.HEART_RATE_UNIT - maxValue) *
                       pixelPerValueUnit);
-              Offset averagePoint = Offset(
-                  i * pixelPerTimeUnit,
-                  (DefaultNumeral.HEART_RATE_UNIT - averageValue) *
-                      pixelPerValueUnit);
               canvas.drawLine(minPoint, maxPoint, lineHeartRate);
-              // canvas.drawOval(
-              //   Rect.fromCenter(
-              //     center: averagePoint,
-              //     width: 3,
-              //     height: averageValue * pixelPerValueUnit,
-              //   ),
-              //   currentHeartRateDot,
-              // );
             }
             //draw dot showing value
             else {
-              print('at $i:00 o"clock, value: ${heartValuesMap[i]!.first}');
               Offset currentHeartRatePoint = Offset(
                   i * pixelPerTimeUnit,
                   (DefaultNumeral.HEART_RATE_UNIT - heartValuesMap[i]!.first) *
@@ -425,7 +449,6 @@ class HeartRateChartPainter extends CustomPainter {
             }
           }
         }
-        print('heartValuesMap: $heartValuesMap');
 
         //vertical line
         canvas.drawLine(maxHeartRatePoint, startPoint, line);

@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:health_project/commons/constants/enum.dart';
 import 'package:health_project/models/activitiy_dto.dart';
 import 'package:health_project/models/bmi_dto.dart';
+import 'package:health_project/models/vital_sign_dto.dart';
 
 abstract class HealthState extends Equatable {
   const HealthState();
@@ -63,3 +64,35 @@ class BMIUpdateFailedState extends HealthState {
   @override
   List<Object> get props => [type];
 }
+
+//HEART RATE STATES
+//heart rate events
+class HeartRateInitialState extends HealthState {}
+
+//loading heart rate list
+class HeartRateLoadingListState extends HealthState {}
+
+//measuring heart rate
+class HeartRateMeasuringState extends HealthState {}
+
+//value response state
+class HeartRateValueResponseState extends HealthState {
+  final int value;
+  const HeartRateValueResponseState({required this.value});
+
+  @override
+  List<Object> get props => [value];
+}
+
+//success getting heart rate list
+class HeartRateSuccessfulListState extends HealthState {
+  final List<VitalSignDTO> list;
+
+  const HeartRateSuccessfulListState({required this.list});
+
+  @override
+  List<Object> get props => [list];
+}
+
+//
+class HeartRateFailedState extends HealthState {}

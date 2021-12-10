@@ -7,6 +7,7 @@ import 'package:health_project/features/health/states/health_state.dart';
 import 'package:health_project/features/peripheral/repositories/peripheral_repository.dart';
 import 'package:health_project/models/activitiy_dto.dart';
 import 'package:health_project/models/bmi_dto.dart';
+import 'package:health_project/models/vital_sign_dto.dart';
 import 'package:health_project/services/authentication_helper.dart';
 import 'package:health_project/services/sqflite_helper.dart';
 
@@ -94,6 +95,73 @@ class BMIBloc extends Bloc<HealthEvent, HealthState> {
     if (state is BMIUpdateSuccessState) {
       this.add(
           BMIEventGet(accountId: AuthenticateHelper.instance.getAccountId()));
+    }
+  }
+}
+
+//
+class HeartRateBloc extends Bloc<HealthEvent, HealthState> {
+  final PeripheralRepository peripheralRepository;
+  final HealthRepository healthRepository;
+  final SQFLiteHelper sqfLiteHelper;
+
+  HeartRateBloc({
+    required this.peripheralRepository,
+    required this.healthRepository,
+    required this.sqfLiteHelper,
+  }) : super(HeartRateInitialState());
+
+  @override
+  Stream<HealthState> mapEventToState(HealthEvent event) async* {
+    try {
+      //
+      if (event is HeartRateAddValueEvent) {
+        await sqfLiteHelper.addVitalSign(event.dto);
+        yield HeartRateLoadingListState();
+        List<VitalSignDTO> list = await sqfLiteHelper.getListVitalSign(
+          event.dto.accountId,
+          event.dto.type,
+          event.dto.time,
+          event.chartType,
+        );
+        if (list.isNotEmpty) {
+          yield HeartRateSuccessfulListState(list: list);
+        }
+      }
+      if (event is HeartRateGetListEvent) {
+        yield HeartRateLoadingListState();
+        List<VitalSignDTO> list = await sqfLiteHelper.getListVitalSign(
+          event.dto.accountId,
+          event.dto.type,
+          event.dto.time,
+          event.chartType,
+        );
+        if (list.isNotEmpty) {
+          yield HeartRateSuccessfulListState(list: list);
+        }
+      }
+      if (event is HeartRateMeasureEvent) {
+        yield HeartRateMeasuringState();
+        // await for (List<int> values
+        //     in peripheralRepository.getHeartRate(event.peripheralId)) {
+        //   if (values.isNotEmpty) {
+        //     print('value: $values');
+        //     this.add(HeartRateResponseEvent(value: values[1]));
+        //   }
+        // }
+        await peripheralRepository.getHeartRate(event.peripheralId);
+        PeripheralRepository.heartRateController.listen((value) {
+          if (value != 0) {
+            this.add(HeartRateResponseEvent(value: value));
+          }
+        });
+      }
+      if (event is HeartRateResponseEvent) {
+        yield HeartRateValueResponseState(value: event.value);
+      }
+    } catch (e) {
+      print('Error at Heart Rate Bloc: $e');
+      yield HeartRateFailedState();
     }
   }
 }

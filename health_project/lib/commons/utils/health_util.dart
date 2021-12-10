@@ -1,3 +1,4 @@
+import 'package:health_project/commons/constants/numeral.dart';
 import 'package:health_project/commons/routes/routes.dart';
 
 class HealthUtil {
@@ -94,5 +95,43 @@ class HealthUtil {
       routeName = Routes.BLOOD_PRESSURE_VIEW;
     }
     return routeName;
+  }
+
+  String processHeartRateStatus(int _min, int _max, int _current) {
+    String prefix = 'Nhịp tim được ghi nhận ';
+    String result = '';
+    String conclusion = '';
+
+    //safe
+    if (_min <= DefaultNumeral.HIGH_HR &&
+        _min > DefaultNumeral.MIN_SAFE_HR &&
+        _max <= DefaultNumeral.HIGH_HR &&
+        _max > DefaultNumeral.MIN_SAFE_HR) {
+      conclusion = 'Nhịp tim ở mức bình thường.';
+    }
+    //high
+    else if (_max > DefaultNumeral.HIGH_HR &&
+        _max <= DefaultNumeral.MAX_SAFE_HR) {
+      conclusion =
+          'Nhịp tim cao do căng thẳng hoặc vận động nhiều. Nghỉ ngơi sẽ giúp bạn tốt hơn.';
+    }
+    //over
+    else if (_max > DefaultNumeral.MAX_SAFE_HR) {
+      conclusion =
+          'Nhịp tim cao bất thường. Nếu có bệnh về tim mạch, hãy liên hệ với bác sĩ chăm sóc.';
+    }
+    //low
+    else if (_min < DefaultNumeral.MIN_SAFE_HR) {
+      conclusion =
+          'Nhịp tim thấp dẫn đến một số trường hợp khó thở hoặc cao huyết áp. Nghỉ ngơi sẽ giúp bạn tốt hơn.';
+    }
+
+    //
+    if (_min == _max) {
+      result = prefix + 'là $_max BPM.' + conclusion;
+    } else {
+      result = prefix + 'từ khoảng $_min - $_max BPM. ' + conclusion;
+    }
+    return result;
   }
 }

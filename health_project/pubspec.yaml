@@ -152,6 +152,7 @@ flutter:
     - assets/images/ic-kcal.png
     - assets/images/ic-meter.png
     - assets/images/bg-activity.png
+    - assets/images/ic-heart.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

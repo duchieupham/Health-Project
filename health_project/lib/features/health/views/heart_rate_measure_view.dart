@@ -139,7 +139,7 @@ class _HeartRateMeasureView extends State<HeartRateMeasureView>
                                     : 'Xong',
                                 style: TextStyle(
                                   color: (animationValue >= 1)
-                                      ? Theme.of(context).hintColor
+                                      ? Theme.of(context).shadowColor
                                       : DefaultTheme.BLUE_TEXT,
                                   fontSize: 18,
                                 ),

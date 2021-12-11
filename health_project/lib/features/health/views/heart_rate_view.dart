@@ -56,13 +56,13 @@ class _HeartRateView extends State<HeartRateView>
 
   @override
   void dispose() {
+    _heartValues.clear();
+    _timeValues.clear();
     _animationController.dispose();
     super.dispose();
   }
 
   void _getEvents(ChartType chartType) {
-    _heartValues.clear();
-    _timeValues.clear();
     VitalSignDTO dto = VitalSignDTO(
       id: 'n/a',
       accountId: AuthenticateHelper.instance.getAccountId(),
@@ -77,6 +77,9 @@ class _HeartRateView extends State<HeartRateView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+      ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -114,6 +117,8 @@ class _HeartRateView extends State<HeartRateView>
               child: BlocConsumer<HeartRateBloc, HealthState>(
                 listener: (context, state) {
                   if (state is HeartRateSuccessfulListState) {
+                    _heartValues.clear();
+                    _timeValues.clear();
                     if (state.list.isNotEmpty) {
                       for (VitalSignDTO dto in state.list) {
                         _heartValues.add(dto.value1);
@@ -123,6 +128,9 @@ class _HeartRateView extends State<HeartRateView>
                     }
                   }
                 },
+                buildWhen: (previous, current) =>
+                    previous != current &&
+                    current is HeartRateSuccessfulListState,
                 builder: (context, state) {
                   return ListView(
                     children: [
@@ -157,32 +165,33 @@ class _HeartRateView extends State<HeartRateView>
                                     });
                               _animationController.forward();
                             }
-                            // return Consumer<TabProvider>(
-                            //   builder: (context, tab, child) {
-                            return CustomPaint(
-                              painter: HeartRateChartPainter(
-                                context: context,
-                                edge: MediaQuery.of(context).size.width -
-                                    (DefaultNumeral.DEFAULT_MARGIN * 2),
-                                currentTime: (_timeValues.isNotEmpty)
-                                    ? _timeValues.last
-                                    : DateTime.now().toString(),
-                                heartValues: _heartValues,
-                                timeValues: _timeValues,
-                                //  type: (tab.tabIndex == 0)
-                                type: (_chartType == ChartType.HOUR)
-                                    ? ChartType.HOUR
-                                    : ChartType.DAY,
-                                valueLength: (_chartType == ChartType.HOUR &&
-                                        _heartValues.isNotEmpty &&
-                                        _timeValues.isNotEmpty)
-                                    ? _animation.value
-                                    : _heartValues.length,
-                              ),
+                            return Consumer<TabProvider>(
+                              builder: (context, tab, child) {
+                                return CustomPaint(
+                                  painter: HeartRateChartPainter(
+                                    context: context,
+                                    edge: MediaQuery.of(context).size.width -
+                                        (DefaultNumeral.DEFAULT_MARGIN * 2),
+                                    currentTime: (_timeValues.isNotEmpty)
+                                        ? _timeValues.last
+                                        : DateTime.now().toString(),
+                                    heartValues: _heartValues,
+                                    timeValues: _timeValues,
+                                    type: (tab.tabIndex == 0)
+                                        //  type: (_chartType == ChartType.HOUR)
+                                        ? ChartType.HOUR
+                                        : ChartType.DAY,
+                                    valueLength:
+                                        (_chartType == ChartType.HOUR &&
+                                                _heartValues.isNotEmpty &&
+                                                _timeValues.isNotEmpty)
+                                            ? _animation.value
+                                            : _heartValues.length,
+                                  ),
+                                );
+                              },
                             );
                           },
-                          //   );
-                          // },
                         ),
                       ),
                       (_heartValues.isNotEmpty && _timeValues.isNotEmpty)
@@ -388,6 +397,8 @@ class _HeartRateView extends State<HeartRateView>
   }
 
   void getEventsByTabIndex(int index) {
+    _heartValues.clear();
+    _timeValues.clear();
     if (index == 0) {
       _chartType = ChartType.HOUR;
       _getEvents(ChartType.HOUR);

@@ -31,10 +31,14 @@ public class EventServiceImpl implements EventService{
 		return eventRepo.getEventById(timeCreated, timeEvent, doctorId, patientId);
 	}
 
-//	@Override
-//	public List<EventDTO> getEventsByPatientIdWithoutDoctor(int patientId) {
-//		List<EventDTO> list =eventRepo.getEventsByPatientIdWithoutDoctor(patientId);
-//		return list;
-//	}
-//	
+	@Override
+	public List<EventDTO> getEventsByDate(int patientId, String date) {
+		return eventRepo.getEventsByDate(patientId, date);
+	}
+
+	@Override
+	public List<EventDTO> getEventsFromDateToDate(int patientId, String fromDate, String toDate) {
+		return eventRepo.getEventsFromDateToDate(patientId, fromDate, toDate);
+	}
+
 }

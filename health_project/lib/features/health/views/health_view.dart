@@ -267,7 +267,7 @@ class HealthView extends StatelessWidget {
                         child: Text(
                           _bmiCalculated.roundToDouble().toString(),
                           style: TextStyle(
-                            color: DefaultTheme.SUCCESS_STATUS,
+                            color: DefaultTheme.GREEN,
                             fontSize: 35,
                           ),
                         ),
@@ -308,7 +308,7 @@ class HealthView extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: (_bmiDTO.gender == 'man')
-                              ? DefaultTheme.WINTER_COLOR
+                              ? DefaultTheme.BLUE_TEXT
                               : DefaultTheme.DARK_PINK,
                           fontSize: 15,
                           fontWeight: FontWeight.w500,

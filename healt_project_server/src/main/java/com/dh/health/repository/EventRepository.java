@@ -25,13 +25,14 @@ public interface EventRepository extends JpaRepository<EventEntity, Long>{
 	List<EventDTO> getEventsByPatientId(@Param(value = "patientId") int patientId);
 	
 	
-	@Query(value="SELECT * FROM dbo.Event WHERE time_created = :timeCreated AND time_event = :timeEvent AND doctor_id = :doctorId AND patient_id = :patientId", nativeQuery = true)
+	@Query(value="SELECT * FROM dbo.event WHERE time_created = :timeCreated AND time_event = :timeEvent AND doctor_id = :doctorId AND patient_id = :patientId", nativeQuery = true)
 	EventEntity getEventById(@Param(value = "timeCreated") String timeCreated, @Param(value = "timeEvent") String timeEvent, @Param(value = "doctorId") int doctorId, @Param(value = "patientId") int patientId);
 //	
-//	@Modifying
-//	@Query(value = "SELECT a.id, a.content , a.status, a.time_created as timeCreated, a.time_event as timeEvent, a.title, a.doctor_id as doctorId, a.patient_id as patientId"
-//			+ "FROM dbo.event a "
-//			+ "WHERE a.patient_id = :patientId", nativeQuery = true)
-//	List<EventDTO> getEventsByPatientIdWithoutDoctor(@Param(value = "patientId") int patientId);
-//	
+
+	@Query(value="SELECT * FROM dbo.event WHERE patient_id = :patientId AND time_event LIKE :date ", nativeQuery = true)
+	List<EventDTO> getEventsByDate(@Param(value = "patientId") int patientId, @Param(value = "date")String date);
+	
+	@Query(value="SELECT * FROM dbo.event WHERE patient_id = :patientId AND time_event between CAST(:fromDate as date) and CAST(:toDate as date)", nativeQuery = true)
+	List<EventDTO> getEventsFromDateToDate(@Param(value = "patientId") int patientId, @Param(value = "fromDate")String fromDate, @Param(value = "toDate")String toDate);
+	
 }

@@ -1,5 +1,6 @@
 import 'package:health_project/commons/constants/numeral.dart';
 import 'package:health_project/commons/routes/routes.dart';
+import 'package:health_project/commons/utils/peripheral_util.dart';
 
 class HealthUtil {
   const HealthUtil._privateConsrtructor();
@@ -83,6 +84,23 @@ class HealthUtil {
       name = 'Oxy trong máu';
     } else if (index == 5) {
       name = 'Nhiệt độ cơ thể';
+    }
+    return name;
+  }
+
+  //get vital sign name by value type
+  String getVitalSignNameByValueType(String valueType) {
+    String name = '';
+    if (valueType == VitalSignValueType.TYPE_HEART_RATE) {
+      name = 'nhịp tim';
+    } else if (valueType == VitalSignValueType.TYPE_BLOOD_PRESSURE) {
+      name = 'huyết áp';
+    } else if (valueType == VitalSignValueType.TYPE_SPO2) {
+      name = 'SPO2';
+    } else if (valueType == VitalSignValueType.TYPE_OXY) {
+      name = 'Oxy';
+    } else if (valueType == VitalSignValueType.TYPE_BODY_TEMPURATURE) {
+      name = 'nhiệt độ';
     }
     return name;
   }

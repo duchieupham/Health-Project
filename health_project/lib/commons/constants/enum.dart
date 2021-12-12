@@ -54,4 +54,5 @@ enum VitalSignType {
 enum ChartType {
   HOUR,
   DAY,
+  ALL,
 }

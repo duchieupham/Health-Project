@@ -16,5 +16,10 @@ public interface EventService {
 	
 	public EventEntity getEventByTimeAndTitle(String timeCreated, String timeEvent, int doctorId, int patientId);
 	
-//	public List<EventDTO> getEventsByPatientIdWithoutDoctor(int patientId);
+	public List<EventDTO> getEventsByDate(int patientId, String date);
+	
+	public List<EventDTO> getEventsFromDateToDate(int patientId, String fromDate, String toDate);
+	
+	
+	
 }

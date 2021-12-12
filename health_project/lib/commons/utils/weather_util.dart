@@ -142,6 +142,15 @@ class WeatherUtil {
     if (selectedPoints.contains(winterPoint)) {
       colors.add(DefaultTheme.WINTER_COLOR.withOpacity(0.8));
     }
+    if (colors.length <= 1) {
+      if (maxTemp > sunnyPoint && minTemp > sunnyPoint) {
+        colors.add(DefaultTheme.SUNNY_COLOR.withOpacity(0.8));
+        colors.add(DefaultTheme.SUNNY_COLOR.withOpacity(0.0));
+      } else if (minTemp < winterPoint && maxTemp < winterPoint) {
+        colors.add(DefaultTheme.WINTER_COLOR.withOpacity(0.8));
+        colors.add(DefaultTheme.WINTER_COLOR.withOpacity(0.0));
+      }
+    }
 
     return LinearGradient(
       begin: Alignment.topCenter,

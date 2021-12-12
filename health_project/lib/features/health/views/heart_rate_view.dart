@@ -9,6 +9,7 @@ import 'package:health_project/features/health/blocs/health_bloc.dart';
 import 'package:health_project/features/health/events/health_event.dart';
 import 'package:health_project/features/health/states/health_state.dart';
 import 'package:health_project/features/health/views/heart_rate_measure_view.dart';
+import 'package:health_project/features/health/views/vital_sign_history_view.dart';
 import 'package:health_project/models/vital_sign_dto.dart';
 import 'package:health_project/services/authentication_helper.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +34,10 @@ class _HeartRateView extends State<HeartRateView>
   late Animation<int> _animation;
   final List<int> _heartValues = [];
   final List<String> _timeValues = [];
+  VitalSignDTO _lastValueDTO = VitalSignDTO(
+      id: 'n/a', accountId: 0, value1: 0, value2: 0, time: 'n/a', type: 'n/a');
   late ChartType _chartType;
+  late DateTime _time;
 
   _HeartRateView();
 
@@ -45,12 +49,13 @@ class _HeartRateView extends State<HeartRateView>
       vsync: this,
       duration: Duration(milliseconds: 500),
     );
+    _time = DateTime.now();
     if (Provider.of<TabProvider>(context, listen: false).tabIndex == 0) {
       _chartType = ChartType.HOUR;
-      _getEvents(ChartType.HOUR);
+      _getEvents();
     } else {
       _chartType = ChartType.DAY;
-      _getEvents(ChartType.DAY);
+      _getEvents();
     }
   }
 
@@ -62,16 +67,18 @@ class _HeartRateView extends State<HeartRateView>
     super.dispose();
   }
 
-  void _getEvents(ChartType chartType) {
+  void _getEvents() {
+    _heartValues.clear();
+    _timeValues.clear();
     VitalSignDTO dto = VitalSignDTO(
       id: 'n/a',
       accountId: AuthenticateHelper.instance.getAccountId(),
       value1: 0,
       value2: 0,
-      time: DateTime.now().toString(),
+      time: _time.toString(),
       type: VitalSignValueType.TYPE_HEART_RATE,
     );
-    _heartRateBloc.add(HeartRateGetListEvent(dto: dto, chartType: chartType));
+    _heartRateBloc.add(HeartRateGetListEvent(dto: dto, chartType: _chartType));
   }
 
   @override
@@ -119,6 +126,9 @@ class _HeartRateView extends State<HeartRateView>
                   if (state is HeartRateSuccessfulListState) {
                     _heartValues.clear();
                     _timeValues.clear();
+                    if (state.lastValue.id != 'n/a') {
+                      _lastValueDTO = state.lastValue;
+                    }
                     if (state.list.isNotEmpty) {
                       for (VitalSignDTO dto in state.list) {
                         _heartValues.add(dto.value1);
@@ -135,69 +145,111 @@ class _HeartRateView extends State<HeartRateView>
                   return ListView(
                     children: [
                       _buildInformationTab(),
-                      Container(
-                        margin: EdgeInsets.only(
-                            right: DefaultNumeral.DEFAULT_MARGIN,
-                            left: DefaultNumeral.DEFAULT_MARGIN,
-                            top: 30),
-                        width: MediaQuery.of(context).size.width -
-                            (DefaultNumeral.DEFAULT_MARGIN * 2),
-                        height: MediaQuery.of(context).size.width -
-                            (DefaultNumeral.DEFAULT_MARGIN * 2),
-                        //  color: Colors.red,
-                        padding: EdgeInsets.only(left: 10),
-                        child: AnimatedBuilder(
-                          animation: _animationController,
-                          builder: (context, child) {
-                            if (_heartValues.isNotEmpty &&
-                                _timeValues.isNotEmpty) {
-                              final IntTween _rotationTween =
-                                  IntTween(begin: 1, end: _heartValues.length);
-                              _animation =
-                                  _rotationTween.animate(_animationController)
-                                    ..addStatusListener((status) {
-                                      if (status == AnimationStatus.completed) {
-                                        _animationController.stop();
-                                      } else if (status ==
-                                          AnimationStatus.dismissed) {
-                                        _animationController.forward();
-                                      }
-                                    });
-                              _animationController.forward();
+                      GestureDetector(
+                        onHorizontalDragEnd: (DragEndDetails details) {
+                          late Duration _duration;
+                          if (_chartType == ChartType.DAY) {
+                            _duration = Duration(days: 1);
+                          } else {
+                            _duration = Duration(hours: 1);
+                          }
+                          //
+                          if (details.primaryVelocity! > 0) {
+                            // User swiped Left d
+                            _time = _time.subtract(_duration);
+                            _getEvents();
+                          } else if (details.primaryVelocity! < 0) {
+                            // User swiped Right
+                            if (DateTime.now().isAfter(_time.add(_duration))) {
+                              _time = _time.add(_duration);
+                              _getEvents();
                             }
-                            return Consumer<TabProvider>(
-                              builder: (context, tab, child) {
-                                return CustomPaint(
-                                  painter: HeartRateChartPainter(
-                                    context: context,
-                                    edge: MediaQuery.of(context).size.width -
-                                        (DefaultNumeral.DEFAULT_MARGIN * 2),
-                                    currentTime: (_timeValues.isNotEmpty)
-                                        ? _timeValues.last
-                                        : DateTime.now().toString(),
-                                    heartValues: _heartValues,
-                                    timeValues: _timeValues,
-                                    type: (tab.tabIndex == 0)
-                                        //  type: (_chartType == ChartType.HOUR)
-                                        ? ChartType.HOUR
-                                        : ChartType.DAY,
-                                    valueLength:
-                                        (_chartType == ChartType.HOUR &&
-                                                _heartValues.isNotEmpty &&
-                                                _timeValues.isNotEmpty)
-                                            ? _animation.value
-                                            : _heartValues.length,
-                                  ),
-                                );
-                              },
-                            );
-                          },
+                          }
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              right: DefaultNumeral.DEFAULT_MARGIN,
+                              left: DefaultNumeral.DEFAULT_MARGIN,
+                              top: 30),
+                          width: MediaQuery.of(context).size.width -
+                              (DefaultNumeral.DEFAULT_MARGIN * 2),
+                          height: MediaQuery.of(context).size.width -
+                              (DefaultNumeral.DEFAULT_MARGIN * 2),
+                          //  color: Colors.red,
+                          padding: EdgeInsets.only(left: 10),
+                          child: AnimatedBuilder(
+                            animation: _animationController,
+                            builder: (context, child) {
+                              if (_heartValues.isNotEmpty &&
+                                  _timeValues.isNotEmpty) {
+                                final IntTween _rotationTween = IntTween(
+                                    begin: 1, end: _heartValues.length);
+                                _animation = _rotationTween
+                                    .animate(_animationController)
+                                  ..addStatusListener((status) {
+                                    if (status == AnimationStatus.completed) {
+                                      _animationController.stop();
+                                    } else if (status ==
+                                        AnimationStatus.dismissed) {
+                                      _animationController.forward();
+                                    }
+                                  });
+                                _animationController.forward();
+                              }
+                              return Consumer<TabProvider>(
+                                builder: (context, tab, child) {
+                                  return CustomPaint(
+                                    painter: HeartRateChartPainter(
+                                      context: context,
+                                      edge: MediaQuery.of(context).size.width -
+                                          (DefaultNumeral.DEFAULT_MARGIN * 2),
+                                      currentTime: (_timeValues.isNotEmpty)
+                                          ? _timeValues.last
+                                          : _time.toString(),
+                                      heartValues: _heartValues,
+                                      timeValues: _timeValues,
+                                      type: (tab.tabIndex == 0)
+                                          //  type: (_chartType == ChartType.HOUR)
+                                          ? ChartType.HOUR
+                                          : ChartType.DAY,
+                                      valueLength:
+                                          (_chartType == ChartType.HOUR &&
+                                                  _heartValues.isNotEmpty &&
+                                                  _timeValues.isNotEmpty)
+                                              ? _animation.value
+                                              : _heartValues.length,
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ),
-                      (_heartValues.isNotEmpty && _timeValues.isNotEmpty)
-                          ? _buildLastHeartRate(
-                              _heartValues.last, _timeValues.last)
+                      //last heart rate widget
+                      (_lastValueDTO.id != 'n/a')
+                          ? _buildLastHeartRate()
                           : Container(),
+                      //show history heart rate button
+                      InkWell(
+                        onTap: () {
+                          _buildVitalSignHistoryView();
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width - 40,
+                          padding: EdgeInsets.only(top: 5, bottom: 5),
+                          margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Hiển thị thêm dữ liệu',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: DefaultTheme.BLUE_TEXT,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   );
                 },
@@ -209,7 +261,7 @@ class _HeartRateView extends State<HeartRateView>
     );
   }
 
-  Widget _buildLastHeartRate(int lastValue, String lastTime) {
+  Widget _buildLastHeartRate() {
     return Container(
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.only(left: 20, right: 20, top: 30),
@@ -225,14 +277,14 @@ class _HeartRateView extends State<HeartRateView>
           ),
           Spacer(),
           Text(
-            '$lastValue',
+            '${_lastValueDTO.value1}',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
               color: Theme.of(context).indicatorColor,
             ),
           ),
-          Text('\tBPM - $lastTime'),
+          Text('\tBPM - ${TimeUtil.instance.formatHour(_lastValueDTO.time)}'),
         ],
       ),
     );
@@ -240,10 +292,8 @@ class _HeartRateView extends State<HeartRateView>
 
   Widget _buildInformationTab() {
     int _max = 0, _min = 0;
-    String currentHour =
-        TimeUtil.instance.getHourToView(DateTime.now().toString());
-    String nextHour =
-        TimeUtil.instance.getNextHourToView(DateTime.now().toString());
+    String currentHour = TimeUtil.instance.getHourToView(_time.toString());
+    String nextHour = TimeUtil.instance.getNextHourToView(_time.toString());
     if (_heartValues.isNotEmpty && _timeValues.isNotEmpty) {
       _max = _heartValues.reduce((curr, next) => curr > next ? curr : next);
       _min = _heartValues.reduce((curr, next) => curr < next ? curr : next);
@@ -297,7 +347,7 @@ class _HeartRateView extends State<HeartRateView>
                       TextSpan(
                         text: (_chartType == ChartType.HOUR)
                             ? 'Từ $currentHour - $nextHour'
-                            : '${TimeUtil.instance.formatTimeHeader()}',
+                            : '${TimeUtil.instance.formatDateEvent(_time.toString())}',
                       ),
                     ],
                   ),
@@ -307,7 +357,7 @@ class _HeartRateView extends State<HeartRateView>
                   child: Text(
                     (_chartType == ChartType.HOUR)
                         ? 'Không có dữ liệu\nTừ $currentHour - $nextHour'
-                        : 'Không có dữ liệu\n${TimeUtil.instance.formatTimeHeader()}',
+                        : 'Không có dữ liệu\n${TimeUtil.instance.formatDateEvent(_time.toString())}',
                     style: TextStyle(
                       fontSize: 15,
                     ),
@@ -396,15 +446,28 @@ class _HeartRateView extends State<HeartRateView>
     });
   }
 
+  _buildVitalSignHistoryView() {
+    return showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        backgroundColor: DefaultTheme.TRANSPARENT,
+        builder: (context) {
+          return VitalSignHistoryView(
+            type: ChartType.ALL,
+            valueType: VitalSignValueType.TYPE_HEART_RATE,
+          );
+        }).then((_) {
+      _getEvents();
+    });
+  }
+
   void getEventsByTabIndex(int index) {
-    _heartValues.clear();
-    _timeValues.clear();
     if (index == 0) {
       _chartType = ChartType.HOUR;
-      _getEvents(ChartType.HOUR);
+      _getEvents();
     } else {
       _chartType = ChartType.DAY;
-      _getEvents(ChartType.DAY);
+      _getEvents();
     }
   }
 

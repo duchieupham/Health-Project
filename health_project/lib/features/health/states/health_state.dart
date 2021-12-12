@@ -87,11 +87,13 @@ class HeartRateValueResponseState extends HealthState {
 //success getting heart rate list
 class HeartRateSuccessfulListState extends HealthState {
   final List<VitalSignDTO> list;
+  final VitalSignDTO lastValue;
 
-  const HeartRateSuccessfulListState({required this.list});
+  const HeartRateSuccessfulListState(
+      {required this.list, required this.lastValue});
 
   @override
-  List<Object> get props => [list];
+  List<Object> get props => [list, lastValue];
 }
 
 //

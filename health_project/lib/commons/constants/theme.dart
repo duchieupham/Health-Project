@@ -18,6 +18,7 @@ class DefaultTheme {
   static const Color TRANSPARENT = Color(0x00000000);
   static const Color GREY_TOP_TAB_BAR = Color(0xFFBEC1C9);
   static const Color SUCCESS_STATUS = Color(0xFF06B271);
+  static const Color GREEN = Color(0xFF00CA28);
   static const Color DARK_GREEN = Color(0xFF0D5F34);
   static const Color BLUE_LIGHT = Color(0xFF96D8FF);
   static const Color DARK_PURPLE = Color(0xFF7951F8);

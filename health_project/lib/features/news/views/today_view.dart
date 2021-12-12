@@ -610,7 +610,7 @@ class TodayView extends StatelessWidget {
   }
 
   //get APIs from server
-  Future<void> _getEvents() async {
+  _getEvents() {
     _listNews.clear();
     _listCategory.clear();
     _lastestNewsBloc

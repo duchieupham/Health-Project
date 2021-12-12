@@ -99,4 +99,34 @@ public class EventController {
 		}
 		return new ResponseEntity<List<EventDTO>>(result, httpStatus);
 	}
+	
+	@GetMapping("events/{patientId}/{date}")
+	public ResponseEntity<List<EventDTO>> getListEventByDate(@PathVariable(value="patientId")int patientId,@PathVariable(value="date")String date){
+		List<EventDTO> result = new ArrayList<>();
+		HttpStatus httpStatus = null;
+		try {
+			date = '%' + date + '%';
+			result = eventService.getEventsByDate(patientId,date);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			System.out.println("ERROR AT GET LIST EVENT: " + e.toString());
+			httpStatus = HttpStatus.BAD_REQUEST;
+		}
+		return new ResponseEntity<List<EventDTO>>(result, httpStatus);
+	}
+	
+	@GetMapping("events/{patientId}/{fromDate}/{toDate}")
+	public ResponseEntity<List<EventDTO>> getListEventFromDateToDate(@PathVariable(value="patientId")int patientId,@PathVariable(value="fromDate")String fromDate,@PathVariable(value="toDate")String toDate){
+		List<EventDTO> result = new ArrayList<>();
+		HttpStatus httpStatus = null;
+		try {
+			result = eventService.getEventsFromDateToDate(patientId, fromDate, toDate);
+			httpStatus = HttpStatus.OK;
+		}catch(Exception e) {
+			System.out.println("ERROR AT GET LIST EVENT: " + e.toString());
+			httpStatus = HttpStatus.BAD_REQUEST;
+		}
+		return new ResponseEntity<List<EventDTO>>(result, httpStatus);
+	}
+	
  }

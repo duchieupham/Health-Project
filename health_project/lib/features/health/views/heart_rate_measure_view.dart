@@ -111,11 +111,15 @@ class _HeartRateMeasureView extends State<HeartRateMeasureView>
                         height: 60,
                         alignment: Alignment.centerRight,
                       ),
-                      Text(
-                        'Đo nhịp tim',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w500,
+                      Container(
+                        height: 60,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Đo nhịp tim',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                       TweenAnimationBuilder<double>(
@@ -141,7 +145,7 @@ class _HeartRateMeasureView extends State<HeartRateMeasureView>
                                   color: (animationValue >= 1)
                                       ? Theme.of(context).shadowColor
                                       : DefaultTheme.BLUE_TEXT,
-                                  fontSize: 18,
+                                  fontSize: 20,
                                 ),
                               ),
                             ),
@@ -170,7 +174,7 @@ class _HeartRateMeasureView extends State<HeartRateMeasureView>
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
-                            bottom: 70,
+                            bottom: 90,
                           ),
                         ),
                         Spacer(),
@@ -213,7 +217,7 @@ class _HeartRateMeasureView extends State<HeartRateMeasureView>
                               )
                             : Container(
                                 width: MediaQuery.of(context).size.width,
-                                height: 80,
+                                height: 100,
                               ),
                         Container(
                           width: MediaQuery.of(context).size.width,

@@ -198,9 +198,9 @@ class SQFLiteHelper {
         timeMatching =
             time.split(' ')[0] + ' ' + time.split(' ')[1].split(':')[0];
       }
-
       var maps = await dbClient.rawQuery(
           "SELECT * FROM $VITAL_SIGN_TABLE WHERE accountId = $accountId AND type = '$type' AND time LIKE '%$timeMatching%' ");
+
       if (maps.isNotEmpty) {
         list = await compute(parseToVitalSignDTO, maps);
       }
@@ -208,6 +208,27 @@ class SQFLiteHelper {
       print('Error at getListVitalSign: $e');
     }
     return list;
+  }
+
+  Future<VitalSignDTO> getLastVitalSign(int accountId, String type) async {
+    Database dbClient = await database;
+    VitalSignDTO dto = VitalSignDTO(
+        id: 'n/a',
+        accountId: 0,
+        value1: 0,
+        value2: 0,
+        time: 'n/a',
+        type: 'n/a');
+    try {
+      var maps = await dbClient.rawQuery(
+          "SELECT * FROM $VITAL_SIGN_TABLE WHERE accountId = $accountId AND type = '$type' ORDER BY time DESC LIMIT 1 ");
+      if (maps.isNotEmpty) {
+        dto = VitalSignDTO.fromJson(maps.first);
+      }
+    } catch (e) {
+      print('Error at getLastVitalSign: $e');
+    }
+    return dto;
   }
 
   //parse Json to VitalSignDTO. Contains 'static' for using thread

@@ -197,13 +197,20 @@ class TimeUtil {
   }
 
   //format date event in calendar (bottom sheet view)
-  String formatDateEvent(String? dateString) {
+  String formatDateEvent(String dateString) {
     String result = '';
-    if (dateString != null && dateString.contains('T')) {
+    if (dateString != '' && dateString.contains('T')) {
       DateTime date = DateTime.parse(dateString);
       String dateInWeek = formatDateOfWeek(
           DateFormat.EEEE(Locale('en').countryCode).format(date));
       String day = dateString.split('T')[0];
+      result =
+          dateInWeek + ', ' + day.split('-')[2] + ' tháng ' + day.split('-')[1];
+    } else if (dateString != '') {
+      DateTime date = DateTime.parse(dateString);
+      String dateInWeek = formatDateOfWeek(
+          DateFormat.EEEE(Locale('en').countryCode).format(date));
+      String day = dateString.split(' ')[0];
       result =
           dateInWeek + ', ' + day.split('-')[2] + ' tháng ' + day.split('-')[1];
     }
@@ -319,6 +326,9 @@ class TimeUtil {
     String result = '';
     if (date.contains('T')) {
       String time = date.split('T')[1].split('.')[0];
+      result = time.split(':')[0] + ':' + time.split(':')[1];
+    } else if (DateTime.tryParse(date) != null && !date.contains('T')) {
+      String time = date.split(' ')[1].split('.')[0];
       result = time.split(':')[0] + ':' + time.split(':')[1];
     }
     return result;

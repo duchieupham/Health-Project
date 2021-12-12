@@ -118,6 +118,8 @@ class HeartRateBloc extends Bloc<HealthEvent, HealthState> {
       if (event is HeartRateAddValueEvent) {
         await sqfLiteHelper.addVitalSign(event.dto);
         yield HeartRateLoadingListState();
+        VitalSignDTO lastValue = await sqfLiteHelper.getLastVitalSign(
+            event.dto.accountId, event.dto.type);
         List<VitalSignDTO> list = await sqfLiteHelper.getListVitalSign(
           event.dto.accountId,
           event.dto.type,
@@ -125,20 +127,20 @@ class HeartRateBloc extends Bloc<HealthEvent, HealthState> {
           event.chartType,
         );
         if (list.isNotEmpty) {
-          yield HeartRateSuccessfulListState(list: list);
+          yield HeartRateSuccessfulListState(list: list, lastValue: lastValue);
         }
       }
       if (event is HeartRateGetListEvent) {
         yield HeartRateLoadingListState();
+        VitalSignDTO lastValue = await sqfLiteHelper.getLastVitalSign(
+            event.dto.accountId, event.dto.type);
         List<VitalSignDTO> list = await sqfLiteHelper.getListVitalSign(
           event.dto.accountId,
           event.dto.type,
           event.dto.time,
           event.chartType,
         );
-        if (list.isNotEmpty) {
-          yield HeartRateSuccessfulListState(list: list);
-        }
+        yield HeartRateSuccessfulListState(list: list, lastValue: lastValue);
       }
       if (event is HeartRateMeasureEvent) {
         yield HeartRateMeasuringState();

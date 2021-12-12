@@ -35,7 +35,7 @@ class SubHeader extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 25,
+              fontSize: 20,
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,

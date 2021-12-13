@@ -1,6 +1,7 @@
 import 'package:health_project/commons/constants/numeral.dart';
 import 'package:health_project/commons/routes/routes.dart';
 import 'package:health_project/commons/utils/peripheral_util.dart';
+import 'package:health_project/commons/utils/time_util.dart';
 
 class HealthUtil {
   const HealthUtil._privateConsrtructor();
@@ -149,6 +150,23 @@ class HealthUtil {
       result = prefix + 'là $_max BPM.' + conclusion;
     } else {
       result = prefix + 'từ khoảng $_min - $_max BPM. ' + conclusion;
+    }
+    return result;
+  }
+
+  String formatTimeHistory(int index, String date) {
+    String result = '';
+    //sort by day
+    if (index == 0) {
+      result = TimeUtil.instance.formatDateEvent(date, ' ');
+    }
+    //sort by month
+    else if (index == 1) {
+      result = 'Tháng ' + date.split('-')[1] + ', năm ' + date.split('-')[0];
+    }
+    //sort by year
+    else {
+      result = 'Năm ' + date;
     }
     return result;
   }

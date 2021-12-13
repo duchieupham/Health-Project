@@ -4,19 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:health_project/commons/constants/enum.dart';
 import 'package:health_project/commons/constants/theme.dart';
 import 'package:health_project/commons/utils/health_util.dart';
+import 'package:health_project/commons/utils/time_util.dart';
 import 'package:health_project/features/health/blocs/health_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_project/features/health/events/health_event.dart';
 import 'package:health_project/features/health/states/health_state.dart';
 import 'package:health_project/models/vital_sign_dto.dart';
 import 'package:health_project/services/authentication_helper.dart';
+import 'package:health_project/services/tab_provider.dart';
+import 'package:provider/provider.dart';
 
 class VitalSignHistoryView extends StatelessWidget {
   final ChartType type;
   final String valueType;
   static bool _isInitial = true;
+  static int _indexTab = 0;
   static late final HeartRateBloc _heartRateBloc;
-  static final List<VitalSignDTO> _vitalSignList = [];
+  static final Map<String, List<VitalSignDTO>> _vitalSignLists = {};
 
   const VitalSignHistoryView({
     required this.type,
@@ -31,6 +35,7 @@ class VitalSignHistoryView extends StatelessWidget {
   }
 
   void _getEvents() {
+    _vitalSignLists.clear();
     VitalSignDTO dto = VitalSignDTO(
       id: 'n/a',
       accountId: AuthenticateHelper.instance.getAccountId(),
@@ -47,6 +52,7 @@ class VitalSignHistoryView extends StatelessWidget {
     if (_isInitial) {
       initialServices(context);
     }
+    _indexTab = 0;
     _getEvents();
     String _title = HealthUtil.instance.getVitalSignNameByValueType(valueType);
     return BackdropFilter(
@@ -127,67 +133,97 @@ class VitalSignHistoryView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6),
                     color: Theme.of(context).cardColor.withOpacity(0.6),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          width: 60,
-                          alignment: Alignment.center,
-                          decoration: _selectedBox(context),
-                          child: Text(
-                            'Ngày',
-                            style: TextStyle(
-                              fontSize: 15,
+                  child: Consumer<TabProvider>(builder: (context, tab, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            tab.updateTabIndex(0);
+                            _indexTab = 0;
+                            _getEvents();
+                          },
+                          child: Container(
+                            width: 60,
+                            alignment: Alignment.center,
+                            decoration: (tab.tabIndex == 0)
+                                ? _selectedBox(context)
+                                : null,
+                            child: Text(
+                              'Ngày',
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
-                      ),
-                      Padding(padding: EdgeInsets.only(left: 5)),
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          width: 60,
-                          alignment: Alignment.center,
-                          decoration: null,
-                          child: Text(
-                            'Tháng',
-                            style: TextStyle(
-                              fontSize: 15,
+                        Padding(padding: EdgeInsets.only(left: 5)),
+                        InkWell(
+                          onTap: () {
+                            tab.updateTabIndex(1);
+                            _indexTab = 1;
+                            _getEvents();
+                          },
+                          child: Container(
+                            width: 60,
+                            alignment: Alignment.center,
+                            decoration: (tab.tabIndex == 1)
+                                ? _selectedBox(context)
+                                : null,
+                            child: Text(
+                              'Tháng',
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
-                      ),
-                      Padding(padding: EdgeInsets.only(left: 5)),
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          width: 60,
-                          alignment: Alignment.center,
-                          decoration: null,
-                          child: Text(
-                            'Năm',
-                            style: TextStyle(
-                              fontSize: 15,
+                        Padding(padding: EdgeInsets.only(left: 5)),
+                        InkWell(
+                          onTap: () {
+                            tab.updateTabIndex(2);
+                            _indexTab = 2;
+                            _getEvents();
+                          },
+                          child: Container(
+                            width: 60,
+                            alignment: Alignment.center,
+                            decoration: (tab.tabIndex == 2)
+                                ? _selectedBox(context)
+                                : null,
+                            child: Text(
+                              'Năm',
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
                 ),
                 Expanded(
                   child: BlocConsumer<HeartRateBloc, HealthState>(
                     listener: (context, state) {
                       if (state is HeartRateSuccessfulListState) {
-                        _vitalSignList.clear();
                         if (state.list.isNotEmpty) {
                           for (VitalSignDTO dto in state.list.reversed) {
-                            _vitalSignList.add(dto);
+                            String key = '';
+                            if (_indexTab == 0) {
+                              key = dto.time.split(' ')[0];
+                            } else if (_indexTab == 1) {
+                              key = TimeUtil.instance.getMonthAndYear(dto.time);
+                            } else {
+                              key = dto.time.split(' ')[0].split('-')[0];
+                            }
+                            if (_vitalSignLists[key] == null) {
+                              _vitalSignLists[key] = [];
+                            }
+                            _vitalSignLists[key]!.add(dto);
                           }
                         }
                       }
@@ -196,16 +232,49 @@ class VitalSignHistoryView extends StatelessWidget {
                         previous != current &&
                         current is HeartRateSuccessfulListState,
                     builder: (context, state) {
-                      return (_vitalSignList.isNotEmpty)
+                      return (_vitalSignLists.isNotEmpty &&
+                              state is HeartRateSuccessfulListState)
                           ? ListView.builder(
-                              itemCount: _vitalSignList.length,
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              itemCount: _vitalSignLists.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.only(left: 10, right: 10),
-                                  padding: EdgeInsets.all(10),
-                                  child: Text(
-                                      '${_vitalSignList[index].time} - ${_vitalSignList[index].value1}'),
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    (index != 0)
+                                        ? Padding(
+                                            padding: EdgeInsets.only(top: 20))
+                                        : Container(),
+                                    Text(
+                                      HealthUtil.instance.formatTimeHistory(
+                                        _indexTab,
+                                        _vitalSignLists.keys.elementAt(index),
+                                      ),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'NewYork',
+                                      ),
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(bottom: 10)),
+                                    for (VitalSignDTO dto in _vitalSignLists
+                                        .values
+                                        .elementAt(index))
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        margin: EdgeInsets.only(bottom: 10),
+                                        padding: EdgeInsets.only(
+                                            left: 20,
+                                            right: 20,
+                                            bottom: 10,
+                                            top: 10),
+                                        decoration: DefaultTheme.cardDecoration(
+                                            context),
+                                        child: Text('${dto.value1} bpm'),
+                                      )
+                                  ],
                                 );
                               },
                             )

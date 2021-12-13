@@ -498,6 +498,8 @@ class HeartRateChartPainter extends CustomPainter {
         }
         //
         break;
+      case ChartType.ALL:
+        break;
     }
   }
 

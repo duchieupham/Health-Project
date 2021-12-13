@@ -71,6 +71,14 @@ class TimeUtil {
     return _format.format(DateTime.parse(date)).toString();
   }
 
+  //get month-year
+  String getMonthAndYear(String date) {
+    DateFormat _format = DateFormat('yyyy-MM');
+    return (date == '' || date == 'n/a')
+        ? ''
+        : _format.format(DateTime.parse(date)).toString();
+  }
+
   bool isHeartRateSameTime(String date1, String date2) {
     bool check = false;
     String date1Formatted = formatHeartRateTimeRecorded(date1);
@@ -197,13 +205,13 @@ class TimeUtil {
   }
 
   //format date event in calendar (bottom sheet view)
-  String formatDateEvent(String dateString) {
+  String formatDateEvent(String dateString, String splitFotmat) {
     String result = '';
-    if (dateString != '' && dateString.contains('T')) {
+    if (dateString != '' && dateString.contains(splitFotmat)) {
       DateTime date = DateTime.parse(dateString);
       String dateInWeek = formatDateOfWeek(
           DateFormat.EEEE(Locale('en').countryCode).format(date));
-      String day = dateString.split('T')[0];
+      String day = dateString.split(splitFotmat)[0];
       result =
           dateInWeek + ', ' + day.split('-')[2] + ' tháng ' + day.split('-')[1];
     } else if (dateString != '') {

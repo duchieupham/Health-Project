@@ -289,14 +289,16 @@ class PeripheralRepository {
     await heartRateMeasurement.setNotifyValue(true);
     int count = 0;
     heartRateMeasurement.value.listen((values) {
-      if (count == 0) {
-        HeartRateHelper.instance.updateLastHeartRate(values[1]);
-      }
-      count++;
-      //Because the last value is the old value tracking,
-      // Checking the new value whether matched or not.
-      if (values[1] != HeartRateHelper.instance.getLastHeartRate()) {
-        heartRateController.sink.add(values[1]);
+      if (values.isNotEmpty) {
+        if (count == 0) {
+          HeartRateHelper.instance.updateLastHeartRate(values[1]);
+        }
+        count++;
+        //Because the last value is the old value tracking,
+        // Checking the new value whether matched or not.
+        if (values[1] != HeartRateHelper.instance.getLastHeartRate()) {
+          heartRateController.sink.add(values[1]);
+        }
       }
     });
   }

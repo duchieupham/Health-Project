@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:health_project/commons/constants/theme.dart';
+import 'package:health_project/commons/widgets/title_widget.dart';
 
 class CalendarView extends StatelessWidget {
   static bool _isInitial = false;
@@ -22,7 +24,23 @@ class CalendarView extends StatelessWidget {
           key: PageStorageKey('TODAY_LIST'),
           controller: _scrollController,
           padding: EdgeInsets.only(left: 10, right: 10, top: 30),
-          children: <Widget>[]),
+          children: <Widget>[
+            TitleWidget(
+              title: 'Sự kiện hôm nay',
+              buttonTitle: '',
+              color: DefaultTheme.RED_CALENDAR,
+              subButton: false,
+              onTap: () {},
+            ),
+            //
+            TitleWidget(
+              title: 'Sự kiện sắp diễn ra',
+              buttonTitle: '',
+              color: DefaultTheme.VERY_PERI,
+              subButton: false,
+              onTap: () {},
+            ),
+          ]),
     );
   }
 }

@@ -270,21 +270,45 @@ class _HeartRateView extends State<HeartRateView>
       child: Row(
         children: [
           Text(
-            'Nhịp tim đo gần nhất: ',
+            'Nhịp tim gần đây: ',
             style: TextStyle(
               fontSize: 15,
             ),
           ),
           Spacer(),
-          Text(
-            '${_lastValueDTO.value1}',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).indicatorColor,
+          RichText(
+            textAlign: TextAlign.right,
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 15,
+                color: Theme.of(context).hintColor,
+              ),
+              children: [
+                TextSpan(
+                  text: '${_lastValueDTO.value1}',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).indicatorColor,
+                  ),
+                ),
+                TextSpan(
+                  text: '\tBPM\n',
+                  style: TextStyle(
+                    color: Theme.of(context).shadowColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                TextSpan(
+                  text:
+                      '${TimeUtil.instance.formatHour(_lastValueDTO.time)} - ${TimeUtil.instance.formatBirthday(_lastValueDTO.time)}',
+                  style: TextStyle(
+                    color: Theme.of(context).shadowColor,
+                  ),
+                ),
+              ],
             ),
           ),
-          Text('\tBPM - ${TimeUtil.instance.formatHour(_lastValueDTO.time)}'),
         ],
       ),
     );
@@ -347,7 +371,7 @@ class _HeartRateView extends State<HeartRateView>
                       TextSpan(
                         text: (_chartType == ChartType.HOUR)
                             ? 'Từ $currentHour - $nextHour'
-                            : '${TimeUtil.instance.formatDateEvent(_time.toString())}',
+                            : '${TimeUtil.instance.formatDateEvent(_time.toString(), 'T')}',
                       ),
                     ],
                   ),
@@ -357,7 +381,7 @@ class _HeartRateView extends State<HeartRateView>
                   child: Text(
                     (_chartType == ChartType.HOUR)
                         ? 'Không có dữ liệu\nTừ $currentHour - $nextHour'
-                        : 'Không có dữ liệu\n${TimeUtil.instance.formatDateEvent(_time.toString())}',
+                        : 'Không có dữ liệu\n${TimeUtil.instance.formatDateEvent(_time.toString(), 'T')}',
                     style: TextStyle(
                       fontSize: 15,
                     ),
@@ -378,6 +402,7 @@ class _HeartRateView extends State<HeartRateView>
                   children: [
                     InkWell(
                       onTap: () {
+                        _time = DateTime.now();
                         tab.updateTabIndex(0);
                         getEventsByTabIndex(0);
                       },
@@ -397,6 +422,7 @@ class _HeartRateView extends State<HeartRateView>
                     Padding(padding: EdgeInsets.only(left: 5)),
                     InkWell(
                       onTap: () {
+                        _time = DateTime.now();
                         tab.updateTabIndex(1);
                         getEventsByTabIndex(1);
                       },
@@ -457,6 +483,11 @@ class _HeartRateView extends State<HeartRateView>
             valueType: VitalSignValueType.TYPE_HEART_RATE,
           );
         }).then((_) {
+      if (_chartType == ChartType.HOUR) {
+        Provider.of<TabProvider>(context, listen: false).updateTabIndex(0);
+      } else {
+        Provider.of<TabProvider>(context, listen: false).updateTabIndex(1);
+      }
       _getEvents();
     });
   }

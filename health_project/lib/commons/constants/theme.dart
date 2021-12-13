@@ -22,6 +22,7 @@ class DefaultTheme {
   static const Color DARK_GREEN = Color(0xFF0D5F34);
   static const Color BLUE_LIGHT = Color(0xFF96D8FF);
   static const Color DARK_PURPLE = Color(0xFF7951F8);
+  static const Color VERY_PERI = Color(0xFF6868AC);
   static const Color LIGHT_PURPLE = Color(0xFFAF93FF);
   static const Color LIGHT_PINK = Color(0xFFFF8AB0);
   static const Color DARK_PINK = Color(0xFFFD246B);

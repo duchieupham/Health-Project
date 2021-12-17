@@ -43,6 +43,7 @@ class _LoginView extends State<LoginView> {
   @override
   void initState() {
     super.initState();
+    print('go into stateful');
     _loginBloc = BlocProvider.of(context);
   }
 
@@ -149,6 +150,7 @@ class _LoginView extends State<LoginView> {
   _buildLoginProcess(int tabSelect) {
     return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
+        print('state is : $state');
         if (state is LoginSuccessState) {
           Navigator.of(context).pushReplacementNamed(Routes.HOME);
         }
@@ -171,8 +173,6 @@ class _LoginView extends State<LoginView> {
           });
         }
       },
-      buildWhen: (context, state) =>
-          state is LoginFailedState || state is LoginProcessingState,
       builder: (context, state) {
         return (state is LoginFailedState)
             ? MessageWidget(type: MessageWidgetType.ERROR, message: state.msg)

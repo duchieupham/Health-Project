@@ -20,6 +20,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       yield LoginLoadingState();
       if (event is LoginByAccountEvent) {
+        print('go into LoginByAccountEvent');
         if (!LoginValidator.instance.isValidUsername(event.username) &&
             !LoginValidator.instance.isValidPassword(event.password))
           yield LoginFailedState(
@@ -38,6 +39,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           );
         else {
           yield LoginProcessingState();
+          print('go into check ok');
           //hash password (HMAC SHA-256, username for key and password for data)
           List<int> key = utf8.encode(event.username);
           List<int> data = utf8.encode(event.password);

@@ -222,6 +222,7 @@ class HealthProject extends StatelessWidget {
                 routes: {
                   //add routes that you wanna push named
                   Routes.HOME: (context) => HomeView(),
+                  Routes.LOGIN: (context) => LoginView(),
                   Routes.SETTING_THEME: (context) => ThemeSettingView(),
                   Routes.INFOR_VIEW: (context) => InformationView(),
                   Routes.INTRO_CONNECT_VIEW: (context) => IntroConnectView(),

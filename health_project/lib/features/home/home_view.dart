@@ -14,6 +14,7 @@ import 'package:health_project/features/notification/blocs/notification_bloc.dar
 import 'package:health_project/features/notification/events/notification_event.dart';
 import 'package:health_project/features/notification/views/notification_view.dart';
 import 'package:health_project/services/authentication_helper.dart';
+import 'package:health_project/services/heart_rate_helper.dart';
 import 'package:health_project/services/notification_count_provider.dart';
 import 'package:health_project/services/page_select_provider.dart';
 import 'package:health_project/services/peripheral_helper.dart';
@@ -378,22 +379,31 @@ class HomeView extends StatelessWidget {
                     Spacer(
                       flex: 2,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width - 40,
-                      height: 50,
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      margin: EdgeInsets.only(bottom: 10),
-                      alignment: Alignment.center,
-                      decoration: DefaultTheme.cardDecoration(context),
-                      child: Text(
-                        'Đăng xuất',
-                        style: TextStyle(
-                          color: DefaultTheme.RED_TEXT,
-                          fontSize: 15,
+                    InkWell(
+                      onTap: () {
+                        // AuthenticateHelper.instance.innitalAuthentication();
+                        // HeartRateHelper.instance.initialHeartRateHelper();
+                        // PeripheralHelper.instance.initialPeripheralHelper();
+                        // ThemeHelper.instance.initialTheme();
+                        // Navigator.of(context).pushNamed(Routes.INITIAL_ROUTE);
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 40,
+                        height: 50,
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        margin: EdgeInsets.only(bottom: 10),
+                        alignment: Alignment.center,
+                        decoration: DefaultTheme.cardDecoration(context),
+                        child: Text(
+                          'Đăng xuất',
+                          style: TextStyle(
+                            color: DefaultTheme.RED_TEXT,
+                            fontSize: 15,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

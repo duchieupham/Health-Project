@@ -12,6 +12,7 @@ import 'package:health_project/features/health/views/heart_rate_measure_view.dar
 import 'package:health_project/features/health/views/vital_sign_history_view.dart';
 import 'package:health_project/models/vital_sign_dto.dart';
 import 'package:health_project/services/authentication_helper.dart';
+import 'package:health_project/services/peripheral_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:health_project/commons/widgets/header_widget.dart';
 import 'package:health_project/commons/widgets/heart_rate_chart_painter.dart';
@@ -96,28 +97,30 @@ class _HeartRateView extends State<HeartRateView>
             Stack(
               children: [
                 SubHeader(title: 'Nhịp tim'),
-                Positioned(
-                  top: 10,
-                  right: 20,
-                  child: InkWell(
-                    onTap: () {
-                      _buildHeartRateMeasuringView();
-                    },
-                    child: Container(
-                      width: 120,
-                      height: 60,
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'Đo',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: DefaultTheme.BLUE_TEXT,
+                (PeripheralHelper.instance.isPeripheralConnect())
+                    ? Positioned(
+                        top: 10,
+                        right: 20,
+                        child: InkWell(
+                          onTap: () {
+                            _buildHeartRateMeasuringView();
+                          },
+                          child: Container(
+                            width: 120,
+                            height: 60,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Đo',
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: DefaultTheme.BLUE_TEXT,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ),
+                      )
+                    : Container(),
               ],
             ),
             Expanded(

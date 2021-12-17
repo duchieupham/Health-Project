@@ -1,6 +1,7 @@
 class Routes {
   static const String INITIAL_ROUTE = '/';
   static const String HOME = '/Home';
+  static const String LOGIN = '/Login';
   static const String SETTING_THEME = '/SettingTheme';
   static const String INFOR_VIEW = '/InformationView';
   static const String PASSWORD_UPDATE = '/PasswordUpdate';
